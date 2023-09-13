@@ -20,6 +20,7 @@ app.controller('UserController', function($scope, UserService, $timeout) {
             username: 'Test',
             first_name: 'Name',
             last_name: 'Last',
+            id: 1,
             email: 'test@gmail.com',
             password: 'Testpas123',
             confirmPassword: 'Testpas123',
@@ -144,14 +145,16 @@ app.controller('UserController', function($scope, UserService, $timeout) {
         return !!viewValue;
     };
 
-    $scope.deleteUser = function(user) {
+    $scope.deleteUser = function() {
         var userList = UserService.getUsersFromSessionStorage();
         for (var i = 0; i < userList.length; i++) {
-            if (userList[i].id === user.id) {
+            if (userList[i].id === $scope.newUser.id) {
                 userList.splice(i, 1);
                 UserService.saveUsersToSessionStorage(userList);
             }
         }
+        $scope.closeForm();
+        $scope.newUser = {};
         updateUsersList();
     };
 

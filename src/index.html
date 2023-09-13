@@ -9,114 +9,111 @@
     <link rel="stylesheet" type="text/css" href="style.css">
 </head>
 <body ng-controller="UserController" class="page">
+    <div ng-show="showSuccess" class="success-popup">Success message</div>
+    <div ng-show="showError" class="error-popup">Error message</div>
 
-<div ng-show="showSuccess" class="success-popup">Success message</div>
-<div ng-show="showError" class="error-popup">Error message</div>
-
-<div class="content-wrapper">
-    <div class="table-wrapper">
-        <button ng-click="showCreateUserForm()" class="button button--create-user">Create user</button>
-        <div class="table-container">
-            <table class="table" ng-if="userList.length > 0">
-                <thead>
-                <tr>
-                    <th class="table__header">username</th>
-                    <th class="table__header">first name'я</th>
-                    <th class="table__header">last name</th>
-                    <th class="table__header">Email</th>
-                    <th class="table__header">Type</th>
-                    <th class="table__header">Actions</th>
-                </tr>
-                </thead>
-                <tbody>
-                <tr ng-repeat="user in userList">
-                    <td class="table__cell">{{user.username}}</td>
-                    <td class="table__cell">{{user.first_name}}</td>
-                    <td class="table__cell">{{user.last_name}}</td>
-                    <td class="table__cell">{{user.email}}</td>
-                    <td class="table__cell">{{user.user_type}}</td>
-                    <td class="table__cell">
-                        <div class="action-buttons">
-                            <button ng-click="editUser(user)" class="button button--edit">Edit</button>
-                        </div>
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-        </div>
-    </div>
-
-    <div ng-show="showForm" class="form form--create-user">
-        <div class="top-block">
-            <h2>{{isEditing ? (newUser.first_name + ' ' + newUser.last_name) : 'Create user'}}</h2>
-            <div class="closeFormButton" ng-click="closeForm()">&#x2715</div>
+    <div class="content-wrapper">
+        <div class="table-wrapper">
+            <button ng-click="showCreateUserForm()" class="button button--create-user">Create user</button>
+            <div class="table-container">
+                <table class="table" ng-if="userList.length > 0">
+                    <thead>
+                    <tr>
+                        <th class="table__header">username</th>
+                        <th class="table__header">first name'я</th>
+                        <th class="table__header">last name</th>
+                        <th class="table__header">Email</th>
+                        <th class="table__header">Type</th>
+                        <th class="table__header">Actions</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr ng-repeat="user in userList">
+                        <td class="table__cell">{{user.username}}</td>
+                        <td class="table__cell">{{user.first_name}}</td>
+                        <td class="table__cell">{{user.last_name}}</td>
+                        <td class="table__cell">{{user.email}}</td>
+                        <td class="table__cell">{{user.user_type}}</td>
+                        <td class="table__cell">
+                            <div class="action-buttons">
+                                <button ng-click="editUser(user)" class="button button--edit">Edit</button>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
 
-        <form ng-submit="createUser()" name="userForm" novalidate class="form__form">
-            <div class="form__field">
-                <label for="username" class="form__label">Username*</label>
-                <input type="text" id="username" ng-class="{invalid: userForm.username.$error.required && userForm.username.$dirty || userForm.username.$error.customValidation}"
-                       ng-model="newUser.username" required name="username" ng-model-options="{ updateOn: 'blur' }" class="form__input" custom-validation="validateUsername">
-                <div class="error-message" ng-show="userForm.username.$error.required && userForm.username.$dirty">Field is required</div>
-                <div class="error-message" ng-show="userForm.username.$error.customValidation">Not unique name</div>
-            </div>
-            <div class="form__field">
-                <label for="first_name" class="form__label">First name*</label>
-                <input type="text" id="first_name"
-                       ng-class="{invalid: userForm.first_name.$error.required && userForm.first_name.$dirty}"
-                       ng-model="newUser.first_name" required name="first_name" class="form__input" custom-validation="validateRequired">
-                <div class="error-message" ng-show="userForm.first_name.$error.required && userForm.first_name.$dirty">Field is required</div>
-            </div>
-            <div class="form__field">
-                <label for="last_name" class="form__label">Last name*</label>
-                <input type="text" id="last_name" ng-class="{invalid: userForm.last_name.$error.required && userForm.last_name.$dirty}"
-                       ng-model="newUser.last_name" required name="last_name" class="form__input" custom-validation="validateRequired">
-                <div class="error-message" ng-show="userForm.last_name.$error.required && userForm.last_name.$dirty">Field is required</div>
-            </div>
-            <div class="form__field">
-                <label for="email" class="form__label">Email*</label>
-                <input type="email" id="email" ng-class="{invalid: userForm.email.$error.required && userForm.email.$dirty || userForm.email.$error.pattern}"
-                       ng-model="newUser.email" required name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]+$/" class="form__input" custom-validation="validateEmail">
-                <div class="error-message" ng-show="userForm.email.$error.required && userForm.email.$dirty">Field is required</div>
-                <div class="error-message" ng-show="userForm.email.$error.pattern">Enter correct email</div>
-            </div>
-            <div class="form__field">
-                <label for="password" class="form__label">Password*</label>
-                <input type="password" id="password"
-                       ng-class="{invalid: userForm.password.$error.required && userForm.password.$dirty || userForm.password.$error.pattern || userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty}"
-                       ng-model="newUser.password" required name="password" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/" class="form__input" custom-validation="validatePassword">
-                <div class="error-message" ng-show="userForm.password.$error.required && userForm.password.$dirty">Field is required</div>
-                <div class="error-message" ng-show="userForm.password.$error.pattern">At least 8 symbols, at least one big letter and one number</div>
-                <div class="error-message" ng-show="userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty">Passwords do not match</div>
+        <div ng-show="showForm" class="form form--create-user">
+            <div class="top-block">
+                <h2>{{isEditing ? (newUser.first_name + ' ' + newUser.last_name) : 'Create user'}}</h2>
+                <div class="closeFormButton" ng-click="closeForm()">&#x2715</div>
             </div>
 
-            <div class="form__field">
-                <label for="confirmPassword" class="form__label">Confirm Password*</label>
-                <input type="password" id="confirmPassword"
-                       ng-class="{invalid: userForm.confirmPassword.$error.required && userForm.confirmPassword.$dirty || userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty}"
-                       ng-model="newUser.confirmPassword" required name="confirmPassword" class="form__input" custom-validation="validateConfirmPassword">
-                <div class="error-message" ng-show="userForm.confirmPassword.$error.required && userForm.confirmPassword.$dirty">Field is required</div>
-                <div class="error-message" ng-show="userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty">Passwords do not match</div>
-            </div>
-            <div class="form__field">
-                <label for="user_type" class="form__label">Type*</label>
-                <select id="user_type" ng-class="{invalid: userForm.user_type.$error.required && userForm.user_type.$dirty}"
-                        ng-model="newUser.user_type" required name="user_type" class="form__select" custom-validation="validateRequired">
-                    <option value="">Select user type</option>
-                    <option value="Admin">Admin</option>
-                    <option value="Driver">Driver</option>
-                </select>
-                <div class="error-message" ng-show="userForm.user_type.$error.required && userForm.user_type.$dirty">Select user type</div>
-            </div>
-            <div class="form--action-buttons">
-                <button ng-show="isEditing" ng-click="deleteUser(user)" class="button button--delete">Delete</button>
-                <button type="submit" class="button button--submit">{{isEditing ? 'Save' : 'Create'}}</button>
-            </div>
+            <form ng-submit="createUser()" name="userForm" novalidate class="form__form">
+                <div class="form__field">
+                    <label for="username" class="form__label">Username*</label>
+                    <input type="text" id="username" ng-class="{invalid: userForm.username.$error.required && userForm.username.$dirty || userForm.username.$error.customValidation}"
+                           ng-model="newUser.username" required name="username" ng-model-options="{ updateOn: 'blur' }" class="form__input" custom-validation="validateUsername">
+                    <div class="error-message" ng-show="userForm.username.$error.required && userForm.username.$dirty">Field is required</div>
+                    <div class="error-message" ng-show="userForm.username.$error.customValidation">Not unique name</div>
+                </div>
+                <div class="form__field">
+                    <label for="first_name" class="form__label">First name*</label>
+                    <input type="text" id="first_name"
+                           ng-class="{invalid: userForm.first_name.$error.required && userForm.first_name.$dirty}"
+                           ng-model="newUser.first_name" required name="first_name" class="form__input" custom-validation="validateRequired">
+                    <div class="error-message" ng-show="userForm.first_name.$error.required && userForm.first_name.$dirty">Field is required</div>
+                </div>
+                <div class="form__field">
+                    <label for="last_name" class="form__label">Last name*</label>
+                    <input type="text" id="last_name" ng-class="{invalid: userForm.last_name.$error.required && userForm.last_name.$dirty}"
+                           ng-model="newUser.last_name" required name="last_name" class="form__input" custom-validation="validateRequired">
+                    <div class="error-message" ng-show="userForm.last_name.$error.required && userForm.last_name.$dirty">Field is required</div>
+                </div>
+                <div class="form__field">
+                    <label for="email" class="form__label">Email*</label>
+                    <input type="email" id="email" ng-class="{invalid: userForm.email.$error.required && userForm.email.$dirty || userForm.email.$error.pattern}"
+                           ng-model="newUser.email" required name="email" ng-pattern="/^[^\s@]+@[^\s@]+\.[^\s@]+$/" class="form__input" custom-validation="validateEmail">
+                    <div class="error-message" ng-show="userForm.email.$error.required && userForm.email.$dirty">Field is required</div>
+                    <div class="error-message" ng-show="userForm.email.$error.pattern">Enter correct email</div>
+                </div>
+                <div class="form__field">
+                    <label for="password" class="form__label">Password*</label>
+                    <input type="password" id="password"
+                           ng-class="{invalid: userForm.password.$error.required && userForm.password.$dirty || userForm.password.$error.pattern || userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty}"
+                           ng-model="newUser.password" required name="password" ng-pattern="/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/" class="form__input" custom-validation="validatePassword">
+                    <div class="error-message" ng-show="userForm.password.$error.required && userForm.password.$dirty">Field is required</div>
+                    <div class="error-message" ng-show="userForm.password.$error.pattern">At least 8 symbols, at least one big letter and one number</div>
+                    <div class="error-message" ng-show="userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty">Passwords do not match</div>
+                </div>
 
-<!--            <div class="error-message" ng-show="isFormInvalid">Form invalid. Please fill all required fields</div>-->
-        </form>
+                <div class="form__field">
+                    <label for="confirmPassword" class="form__label">Confirm Password*</label>
+                    <input type="password" id="confirmPassword"
+                           ng-class="{invalid: userForm.confirmPassword.$error.required && userForm.confirmPassword.$dirty || userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty}"
+                           ng-model="newUser.confirmPassword" required name="confirmPassword" class="form__input" custom-validation="validateConfirmPassword">
+                    <div class="error-message" ng-show="userForm.confirmPassword.$error.required && userForm.confirmPassword.$dirty">Field is required</div>
+                    <div class="error-message" ng-show="userForm.confirmPassword.$dirty && passwordsNotMatch && userForm.password.$dirty">Passwords do not match</div>
+                </div>
+                <div class="form__field">
+                    <label for="user_type" class="form__label">Type*</label>
+                    <select id="user_type" ng-class="{invalid: userForm.user_type.$error.required && userForm.user_type.$dirty}"
+                            ng-model="newUser.user_type" required name="user_type" class="form__select" custom-validation="validateRequired">
+                        <option value="">Select user type</option>
+                        <option value="Admin">Admin</option>
+                        <option value="Driver">Driver</option>
+                    </select>
+                    <div class="error-message" ng-show="userForm.user_type.$error.required && userForm.user_type.$dirty">Select user type</div>
+                </div>
+                <div class="form--action-buttons">
+                    <button ng-show="isEditing" ng-click="deleteUser()" type="button" class="button button--delete">Delete</button>
+                    <button type="submit" class="button button--submit">{{isEditing ? 'Save' : 'Create'}}</button>
+                </div>
+            </form>
+        </div>
     </div>
-</div>
 
 <script type="text/javascript" src="main.js"></script>
 </body>
